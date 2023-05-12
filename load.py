@@ -1,19 +1,21 @@
 import json
 
 
-class Load():
+class Load:
     def __init__(self):
         # Configs vars.
-        port = 0
-        secretKey = 'Zzzzzzzzzzzzzzzzzzzzzzz'
-        debug = False;
+        self.port = 0
+        self.secretKey = 'Zzzzzzzzzzzzzzzzzzzzzzz'
+        self.debug = False;
+        self.saveRoute = ''
+
 
         # Usuarios permitidos.
-        authUsers = ['DONT PUT NOTHING HERE']
+        self.authUsers = ['DONT PUT NOTHING HERE']
         
         # Tamaños de Whisper que podemos usar.
-        whisperSizeSelected = ''
-        whisperSize = ['tiny', 'base', 'small', 'medium', 'large']
+        self.whisperSizeSelected = ''
+        self.whisperSize = ['tiny', 'base', 'small', 'medium', 'large']
 
 
     
@@ -46,7 +48,16 @@ class Load():
                 self.debug = config["debug"]
 
                 if config['whisperSize'] in self.whisperSize:
-                    self.whisperSizeSelected = config['whisperSize']
+                    self.whisperSizeSelected = config['whisperSize'].lower()
+
+                    if 'temporalSaveRoute' in config:
+                        self.saveRoute = config['temporalSaveRoute']
+
+                        if self.saveRoute[-1] is not '/':
+                            self.saveRoute += '/'
+                    
+                    else:
+                        self.saveRoute = './'
 
 
                 # Instnaciamos los usuarios permitidos.

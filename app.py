@@ -1,6 +1,8 @@
 # Librerías para la API.
 from flask import Flask, request
 from markupsafe import escape
+from werkzeug.utils import secure_filename
+
 
 # Leer jsons.
 import json
@@ -19,6 +21,10 @@ import whisper
 load = Load()
 lConfig = load.configurations()
 
+
+
+# Cargar el modelo de Whisper.
+model = whisper.load_model(load.whisperSizeSelected)
 
 
 # Instanciando la app de Flask.
@@ -67,8 +73,15 @@ def TalkVoice():
             # Validamos si se está enviando un archivo (en este caso con la clave Audio)
             if 'Audio' in request.files:
                 audio = request.files['Audio'] # Audio que nos pasaron
-                
 
+                # Validamos que la palabra audio esté en el tipo de archivo. Así validamos que sea un archivo de audio y no un archivio virus que luego vamos a descargar xd
+                if 'audio' in audio.content_type:
+                    filename = secure_filename(audio.filename)
+                    audio.save(load.saveRoute + filename) # Tomamos la ruta temporal y lo guardamos allí (esto será bueno?)
+
+                    print(load.saveRoute + filename)
+                    # TODO: Deberíamos validar aquí cosas como la duración y volumen y todo eso.
+                    audiow = whisper.load_audio(load.saveRoute + filename)
 
 
                 return "Ola!"

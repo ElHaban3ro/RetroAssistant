@@ -5,7 +5,8 @@
         "secretKey": "1905030928308823492934823480239401208203825309",
         "port": 5000,
         "debug": true,
-        "whisperSize": "base"
+        "whisperSize": "base",
+        "temporalSaveRoute": "C:/Users/Terro/Documents/TempFiles/"
 
     },
 
