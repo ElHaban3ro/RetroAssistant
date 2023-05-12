@@ -11,6 +11,11 @@ class Load():
         # Usuarios permitidos.
         authUsers = ['DONT PUT NOTHING HERE']
         
+        # Tamaños de Whisper que podemos usar.
+        whisperSizeSelected = ''
+        whisperSize = ['tiny', 'base', 'small', 'medium', 'large']
+
+
     
     def configurations(self): 
         # Leemos el archivo de configuraciones.
@@ -39,6 +44,9 @@ class Load():
                 self.port = config['port']
                 self.secretKey = config["secretKey"]
                 self.debug = config["debug"]
+
+                if config['whisperSize'] in self.whisperSize:
+                    self.whisperSizeSelected = config['whisperSize']
 
 
                 # Instnaciamos los usuarios permitidos.

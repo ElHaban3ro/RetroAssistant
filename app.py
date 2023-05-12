@@ -2,7 +2,6 @@
 from flask import Flask, request
 from markupsafe import escape
 
-
 # Leer jsons.
 import json
 
@@ -10,6 +9,13 @@ import json
 from load import Load
 
 
+# Importamos Whisper.
+import whisper
+
+
+
+
+# Cargamos las configuraciones.
 load = Load()
 lConfig = load.configurations()
 
@@ -35,9 +41,9 @@ def ping():
 
 
 
-# Ruta de la API para recibir el audio.
-@app.route("/API/Talk", methods = ["POST"])
-def talk():
+# Ruta de la API para recibir el audio y hablarle a la IA en base a este texto del audio.
+@app.route("/API/Talk/Voice", methods = ["POST"])
+def TalkVoice():
 
     # Validamos si nos están pasando una clave de acceso.
     if 'AuthKey' in request.form:
@@ -61,7 +67,8 @@ def talk():
             # Validamos si se está enviando un archivo (en este caso con la clave Audio)
             if 'Audio' in request.files:
                 audio = request.files['Audio'] # Audio que nos pasaron
-                    
+                
+
 
 
                 return "Ola!"
@@ -71,8 +78,6 @@ def talk():
 
     else:
         return "It appears that you are not passing an authorization key. Make sure you are passing the 'AuthKey' parameter."
-
-
 
 
 
