@@ -83,14 +83,21 @@ def TalkVoice():
                     # TODO: Deberíamos validar aquí cosas como la duración y volumen y todo eso.
                     audioRead = open(load.saveRoute + filename, 'rb')
 
-
+                    # Codigo para cambiar el codec del audio. En principio (y para archivos de audio no muy largos (no más de 2min)) no tendría porqué tardar.
                     withCodec = ''
                     randomName = f"{random.randint(999, 9999)}"
 
                     if 'wav' in audio.content_type:
                         AudioSegment.from_file(load.saveRoute + filename).export(load.saveRoute + randomName + '.wav', format = 'wav', codec = 'pcm_s16le')
                         withCodec = load.saveRoute + randomName + '.wav'
-                        # os.remove(load.saveRoute + filename)
+
+                    elif 'mp3' in audio.content_type:
+                        AudioSegment.from_file(load.saveRoute + filename).export(load.saveRoute + randomName + '.wav', format = 'wav', codec = 'pcm_s16le')
+                        withCodec = load.saveRoute + randomName + '.wav'
+
+                    else:
+                        print("Hello! It seems that the type of audio passed is not allowed. The only file extensions supported by RetroAssistant are: MP3 and WAV.")
+                        exit()
 
 
 
@@ -102,8 +109,16 @@ def TalkVoice():
                     toText = r.recognize_google(audio, language='es-ES')
 
 
-                
-                return toText
+                    #!!!! ELIMINAMOS TODOS LOS ARCHIVOS PREVIOS. LOS RECIBIDOS EN UN PRINCIPIO Y LOS QUE CONVERTIMOS. POR AMOR AL USUARIO, NO NOS QUEDAMOS CON NADA.
+                    os.remove(load.saveRoute + filename)
+                    os.remove(withCodec)
+
+                    return toText
+
+                else:
+                    print("Dear user. It seems that you are not passing an audio file. Don't be funny and try again c:")
+                    exit()
+
 
             else:
                 return "We have not received any audio! Make sure you are communicating with the API correctly."
