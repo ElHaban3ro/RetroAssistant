@@ -4,17 +4,16 @@ from markupsafe import escape
 from werkzeug.utils import secure_filename
 
 
-# Leer jsons.
-import json
-
 # Importamos nuestra clase para cargar las configuraciones y demás.
 from load import Load
 
 
-# Importamos Whisper.
-import whisper
-
-
+# Importamos speech_recognition para el reconocimiento de voz.
+import speech_recognition as sr
+import openai
+from pydub import AudioSegment
+import random
+import os
 
 
 # Cargamos las configuraciones.
@@ -23,8 +22,9 @@ lConfig = load.configurations()
 
 
 
-# Cargar el modelo de Whisper.
-model = whisper.load_model(load.whisperSizeSelected)
+# Cargamos el cliente reconocedor.
+r = sr.Recognizer()
+
 
 
 # Instanciando la app de Flask.
@@ -50,6 +50,8 @@ def ping():
 # Ruta de la API para recibir el audio y hablarle a la IA en base a este texto del audio.
 @app.route("/API/Talk/Voice", methods = ["POST"])
 def TalkVoice():
+
+    print("ola")
 
     # Validamos si nos están pasando una clave de acceso.
     if 'AuthKey' in request.form:
@@ -78,13 +80,30 @@ def TalkVoice():
                 if 'audio' in audio.content_type:
                     filename = secure_filename(audio.filename)
                     audio.save(load.saveRoute + filename) # Tomamos la ruta temporal y lo guardamos allí (esto será bueno?)
-
-                    print(load.saveRoute + filename)
                     # TODO: Deberíamos validar aquí cosas como la duración y volumen y todo eso.
-                    audiow = whisper.load_audio(load.saveRoute + filename)
+                    audioRead = open(load.saveRoute + filename, 'rb')
 
 
-                return "Ola!"
+                    withCodec = ''
+                    randomName = f"{random.randint(999, 9999)}"
+
+                    if 'wav' in audio.content_type:
+                        AudioSegment.from_file(load.saveRoute + filename).export(load.saveRoute + randomName + '.wav', format = 'wav', codec = 'pcm_s16le')
+                        withCodec = load.saveRoute + randomName + '.wav'
+                        # os.remove(load.saveRoute + filename)
+
+
+
+                    with sr.AudioFile(withCodec) as source:
+                        audio = r.record(source)
+
+
+
+                    toText = r.recognize_google(audio, language='es-ES')
+
+
+                
+                return toText
 
             else:
                 return "We have not received any audio! Make sure you are communicating with the API correctly."

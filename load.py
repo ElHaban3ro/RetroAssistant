@@ -59,6 +59,9 @@ class Load:
                     else:
                         self.saveRoute = './'
 
+                else:
+                    print('WhisperSize Erorr.')
+                    exit()
 
                 # Instnaciamos los usuarios permitidos.
                 self.authUsers = data['AuthKeys']
