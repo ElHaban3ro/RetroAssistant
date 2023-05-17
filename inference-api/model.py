@@ -4,6 +4,7 @@ from load import Load
 
 # Librerías necesarias para cargar el modelo.
 from transformers import GPTNeoXForCausalLM, AutoTokenizer, BitsAndBytesConfig, AutoModelForCausalLM
+import torch
 
 
 
@@ -51,8 +52,27 @@ class Model:
             load_in_8bit = True, 
             low_cpu_mem_usage = True, 
             quantization_config = quantization_config,
-            offload_folder = "/content/temp/"
+            offload_folder = "/content/temp/",
+
+            local_files_only = True if downloadModel else False
 
             )                        
             
 
+    # Método para generar una respuesta.
+    def GenerateResponse(self, message = 'Hola! Cómo estás?', new_tokens = 30, temperature = .7):        
+        # TODO: Hacer un historial desde un .json
+
+        #! Ponemos el formato de los mensajes que recibe el modelo. Muchas veces, dependiendo de un modelo, su forma puede variar.
+        # TODO: Deberíamos añadir el historial de conversación atrás?
+        message = '<|prompter|> ' + message + '<|endoftext|><|assistant|>'
+
+        # Tokenizamos el mensaje.
+        inputs = self.tokenizer(message, return_tensors = 'pt').to(self.model.device)
+
+        # Generamos una respuesta. Esto es lo que suele tardar. El tiempo que tarda es directamente proporcional al número de nuevos tokens.
+        tokens = self.model.generate(**inputs, max_new_tokens = new_tokens, do_sample = True, temperature = temperature)
+
+        result = self.tokenizer.decode(tokens[0])
+
+        return result

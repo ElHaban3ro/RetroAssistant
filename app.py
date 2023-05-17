@@ -104,7 +104,7 @@ def TalkVoice():
 
 
 
-                    toText = r.recognize_google(audio, language='es-ES')
+                    toText = r.recognize_google(audio, language='es-ES') # El audio convertido en texto!
 
 
                     #!!!! ELIMINAMOS TODOS LOS ARCHIVOS PREVIOS. LOS RECIBIDOS EN UN PRINCIPIO Y LOS QUE CONVERTIMOS. POR AMOR AL USUARIO, NO NOS QUEDAMOS CON NADA.
@@ -112,7 +112,9 @@ def TalkVoice():
                     # os.remove(load.saveRoute + filename)
                     # os.remove(withCodec)
 
-                    return toText
+                    
+                    # request
+
 
                 else:
                     return "Dear user. It seems that you are not passing an audio file. Don't be funny and try again c:"
@@ -129,4 +131,4 @@ def TalkVoice():
 
 
 # Configuración básica de la app. Esto es bueno tenerlo claro para el desplegue.
-app.run(port = load.port, debug = load.debug)
+app.run(port = load.sttPort, debug = load.debug)
