@@ -14,6 +14,11 @@ from pydub import AudioSegment
 import random
 
 
+import requests
+
+
+
+
 
 # Cargamos las configuraciones.
 load = Load()
@@ -111,9 +116,13 @@ def TalkVoice():
                     # TODO: Esto da errores porque los archivos quedan abiertos. Arreglar esto.
                     # os.remove(load.saveRoute + filename)
                     # os.remove(withCodec)
-
                     
-                    # request
+
+                    # Petición para devolverle al usuario una respuesta a su audio!
+                    payload = {'AuthKey': AuthKey, 'message': toText}
+                    res = request.post(f'localhost:{load.inferencePort}/API/Inference/max_tokens=150/creativity=0.8', data = payload)
+
+                    return res.text
 
 
                 else:
