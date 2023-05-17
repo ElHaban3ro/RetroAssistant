@@ -4,18 +4,17 @@ import json
 class Load:
     def __init__(self):
         # Configs vars.
-        self.port = 0
-        self.secretKey = 'Zzzzzzzzzzzzzzzzzzzzzzz'
-        self.debug = False;
-        self.saveRoute = ''
+        #! NO MODIFICAR ESTAS VARIABLES, ESTAS DE ASIGNAN DESDE EL ARCHIVO [Config.json]
+        self.sttPort = 0 # Puerto donde corre la app principal.
+        self.inferencePort = 0 # Puerto donde corre la app de inferencia.
+        self.secretKey = 'Zzzzzzzzzzzzzzzzzzzzzzz' # Clave de las API's de Flask.
+        self.debug = False; # Estado de las API's.
+        self.saveRoute = '' # Ruta temporal donde se guardan los audios.
+        self.modelNameOrPath = '' # Modelo usado para la inferencia.
 
 
         # Usuarios permitidos.
         self.authUsers = ['DONT PUT NOTHING HERE']
-        
-        # Tamaños de Whisper que podemos usar.
-        self.whisperSizeSelected = ''
-        self.whisperSize = ['tiny', 'base', 'small', 'medium', 'large']
 
 
     
@@ -43,7 +42,9 @@ class Load:
                 config = data['AppConfig']
                 
                 # instanciamos las variables de configuración. 
-                self.port = config['port']
+                self.sttPort = config['sttPort']
+                self.inferencePort = config['inferencePort']
+                
                 self.secretKey = config["secretKey"]
                 self.debug = config["debug"]
 
@@ -62,6 +63,8 @@ class Load:
                 else:
                     print('WhisperSize Erorr.')
                     exit()
+
+
 
                 # Instnaciamos los usuarios permitidos.
                 self.authUsers = data['AuthKeys']

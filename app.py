@@ -10,10 +10,9 @@ from load import Load
 
 # Importamos speech_recognition para el reconocimiento de voz.
 import speech_recognition as sr
-import openai
 from pydub import AudioSegment
 import random
-import os
+
 
 
 # Cargamos las configuraciones.
@@ -36,6 +35,8 @@ app.config.from_mapping(
 )
 
 
+
+
 # Ruta base para ping.
 @app.route("/ping", methods = ["POST", "GET"])
 def ping():
@@ -50,9 +51,6 @@ def ping():
 # Ruta de la API para recibir el audio y hablarle a la IA en base a este texto del audio.
 @app.route("/API/Talk/Voice", methods = ["POST"])
 def TalkVoice():
-
-    print("ola")
-
     # Validamos si nos están pasando una clave de acceso.
     if 'AuthKey' in request.form:
         AuthKey = request.form['AuthKey'] # Clave de acceso pasada.
@@ -91,12 +89,12 @@ def TalkVoice():
                         AudioSegment.from_file(load.saveRoute + filename).export(load.saveRoute + randomName + '.wav', format = 'wav', codec = 'pcm_s16le')
                         withCodec = load.saveRoute + randomName + '.wav'
 
-                    elif 'mp3' in audio.content_type:
+                    elif 'mpeg' in audio.content_type:
                         AudioSegment.from_file(load.saveRoute + filename).export(load.saveRoute + randomName + '.wav', format = 'wav', codec = 'pcm_s16le')
                         withCodec = load.saveRoute + randomName + '.wav'
 
                     else:
-                        print("Hello! It seems that the type of audio passed is not allowed. The only file extensions supported by RetroAssistant are: MP3 and WAV.")
+                        return "Hello! It seems that the type of audio passed is not allowed. The only file extensions supported by RetroAssistant are: MP3 and WAV."
                         exit()
 
 
@@ -110,13 +108,14 @@ def TalkVoice():
 
 
                     #!!!! ELIMINAMOS TODOS LOS ARCHIVOS PREVIOS. LOS RECIBIDOS EN UN PRINCIPIO Y LOS QUE CONVERTIMOS. POR AMOR AL USUARIO, NO NOS QUEDAMOS CON NADA.
-                    os.remove(load.saveRoute + filename)
-                    os.remove(withCodec)
+                    # TODO: Esto da errores porque los archivos quedan abiertos. Arreglar esto.
+                    # os.remove(load.saveRoute + filename)
+                    # os.remove(withCodec)
 
                     return toText
 
                 else:
-                    print("Dear user. It seems that you are not passing an audio file. Don't be funny and try again c:")
+                    return "Dear user. It seems that you are not passing an audio file. Don't be funny and try again c:"
                     exit()
 
 
