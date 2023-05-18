@@ -38,7 +38,7 @@ app.config.from_mapping(
 
 # Instanciando la clase Model y cargando el modelo.
 inferenceModel = Model()
-# inferenceModel.LoadModel()
+inferenceModel.LoadModel() # El modelo se carga. Este es el momento más crítico.
 
 
 
@@ -104,7 +104,7 @@ def Inference(tokens, temperature):
 
 
         else:
-            return "It appears that you are not passing an authorization key. Make sure you are passing the 'AuthKey' parameter."
+            return "You are not authorized on the API side. Contact the developer to get access to the API."
 
     else:
         return "It appears that you are not passing an authorization key. Make sure you are passing the 'AuthKey' parameter."

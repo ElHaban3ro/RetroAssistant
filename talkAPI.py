@@ -53,6 +53,9 @@ def ping():
 
 
 
+
+# | ------------------------------------------------- |
+
 # Ruta de la API para recibir el audio y hablarle a la IA en base a este texto del audio.
 @app.route("/API/Talk/Voice", methods = ["POST"])
 def TalkVoice():
@@ -132,11 +135,14 @@ def TalkVoice():
 
             else:
                 return "We have not received any audio! Make sure you are communicating with the API correctly."
-
+            
+        else:
+            return "You are not authorized on the API side. Contact the developer to get access to the API."
+        
     else:
         return "It appears that you are not passing an authorization key. Make sure you are passing the 'AuthKey' parameter."
 
-
+# | ------------------------------------------------- |
 
 
 # Configuración básica de la app. Esto es bueno tenerlo claro para el desplegue.
