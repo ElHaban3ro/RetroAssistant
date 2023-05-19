@@ -10,9 +10,7 @@ class Load:
         self.secretKey = 'Zzzzzzzzzzzzzzzzzzzzzzz' # Clave de las API's de Flask.
         self.debug = False; # Estado de las API's.
         self.saveRoute = '' # Ruta temporal donde se guardan los audios.
-        self.modelNameOrPath = '' # Modelo usado para la inferencia.
-
-
+        
         # Usuarios permitidos.
         self.authUsers = ['DONT PUT NOTHING HERE']
 
@@ -48,21 +46,15 @@ class Load:
                 self.secretKey = config["secretKey"]
                 self.debug = config["debug"]
 
-                if config['whisperSize'] in self.whisperSize:
-                    self.whisperSizeSelected = config['whisperSize'].lower()
 
-                    if 'temporalSaveRoute' in config:
-                        self.saveRoute = config['temporalSaveRoute']
+                if 'temporalSaveRoute' in config:
+                    self.saveRoute = config['temporalSaveRoute']
 
-                        if self.saveRoute[-1] is not '/':
-                            self.saveRoute += '/'
-                    
-                    else:
-                        self.saveRoute = './'
-
+                    if self.saveRoute[-1] != '/':
+                        self.saveRoute += '/'
+                
                 else:
-                    print('WhisperSize Erorr.')
-                    exit()
+                    self.saveRoute = './'
 
 
 

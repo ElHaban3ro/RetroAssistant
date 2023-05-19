@@ -21,7 +21,18 @@ lConfig = load.configurations()
 
 
 # Importamos la case model para importar/operar con el propio modelo.
-from model import Model
+from inference_api.model import Model
+
+
+
+
+# Instanciando la clase Model y cargando el modelo.
+print('Loading Model...')
+inferenceModel = Model()
+inferenceModel.LoadGPT(downloadModel = True) # El modelo se carga. Este es el momento más crítico.
+print('Loaded.')
+
+
 
 
 
@@ -33,15 +44,6 @@ app.config.from_mapping(
     SECRET_KEY = load.secretKey,
 
 )
-
-
-
-# Instanciando la clase Model y cargando el modelo.
-inferenceModel = Model()
-inferenceModel.LoadModel() # El modelo se carga. Este es el momento más crítico.
-
-
-
 
 
 # Ruta base para ping.
@@ -63,6 +65,7 @@ def Inference(tokens, temperature):
     # Validamos si nos están pasando una clave de acceso.
     if 'AuthKey' in request.form:
         AuthKey = request.form['AuthKey'] # Clave de acceso pasada.
+        # print(f'AuthKey: {AuthKey}')
         auth = False
 
         self_username = '' # Nombre el usuario que "logueo". Es el nombre del dueño de la clave.
@@ -70,7 +73,10 @@ def Inference(tokens, temperature):
         # Valdidamos la clave.
         for username in load.authUsers:
             self_username = username
-            if AuthKey == load.authUsers[username]:
+            
+            # print(f'AuthKey: {AuthKey}\nKeyInDB: {load.authUsers[username]}')
+
+            if f'{AuthKey}' == f'{load.authUsers[username]}':
                 auth = True
                 break
 
@@ -83,11 +89,11 @@ def Inference(tokens, temperature):
         if (auth):
             # Validamos si el parámetro "mensaje pasado por post."
             if 'message' in request.form:
-                message = request.form['messages']
+                message = request.form['message']
 
-                if (tokens > 1 and tokens < 1500 if self_username == 'ElHaban3ro' else 300): # Beneficios para el admin 😎
-                    if temperature >= 0.01 and temperature <= 2:
-                        Assistant_Response = inferenceModel.GenerateResponse(message = message, new_tokens = tokens, temperature = temperature) # Generamos respuesta.
+                if (float(tokens) > 1 and float(tokens) < 1500 if self_username == 'ElHaban3ro' else 300): # Beneficios para el admin 😎
+                    if float(temperature) >= 0.01 and float(temperature) <= 2:
+                        Assistant_Response = inferenceModel.GenerateResponse(message = message, new_tokens = float(tokens), temperature = float(temperature)) # Generamos respuesta.
                         return Assistant_Response
 
                     

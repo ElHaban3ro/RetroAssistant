@@ -16,15 +16,14 @@ lConfig = load.configurations()
 
 class Model:
     def __init__(self):
-        self.modelame = load.modelNameOrPath # Variable que guarda el nombre del modelo.
         self.tokenizer = None
         self.model = None
 
 
     # Método para cargar el módelo. Esto suele ser la parte más dura de todas y requiere bastante RAM. Lo recomendable son 16GB POR LO MENOS.
-    def LoadModel(self, tryLowMode = True, downloadModel = True):
+    def LoadOasst(self, tryLowMode = True, downloadModel = True):
         # Cargamos el tokenizador.
-        self.tokenizer = AutoTokenizer.from_pretrained(self.modelname, local_files_only = True if downloadModel else False)
+        self.tokenizer = AutoTokenizer.from_pretrained("OpenAssistant/stablelm-7b-sft-v7-epoch-3", local_files_only = True if downloadModel else False)
 
         # Configuraciones necesarias para algunas arquitecturas. 
         quantization_config = BitsAndBytesConfig(llm_int8_enable_fp32_cpu_offload = True)
@@ -57,6 +56,14 @@ class Model:
             local_files_only = True if downloadModel else False
 
             )                        
+
+
+
+    def LoadGPT(self, downloadModel = True):
+        # Cargamos el tokenizador.
+        self.tokenizer = AutoTokenizer.from_pretrained('gpt2')
+
+        self.model = AutoModelForCausalLM.from_pretrained("gpt2")
             
 
     # Método para generar una respuesta.
@@ -74,5 +81,5 @@ class Model:
         tokens = self.model.generate(**inputs, max_new_tokens = new_tokens, do_sample = True, temperature = temperature)
 
         result = self.tokenizer.decode(tokens[0])
-
+        print(result)
         return result

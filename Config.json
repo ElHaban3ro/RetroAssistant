@@ -9,8 +9,7 @@
 
 
         "debug": true,
-        "temporalSaveRoute": "C:/Users/Terro/Documents/TempFiles/",
-        "modelNameOrPath": "OpenAssistant/stablelm-7b-sft-v7-epoch-3"
+        "temporalSaveRoute": "C:/Users/Terro/Documents/TempFiles/"
 
     },
 
